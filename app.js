@@ -7,23 +7,27 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 var request = require("request");
 
 app.get("/", (req, res) => {
-  // let cmdStr = `
-  // if (( $(ps -ef | grep web | grep -v grep | wc -l) > 0 )); then
-  //              echo "web正在运行！"
-  //      else
-  //              echo "web未运行！调起web中..."
-  //              nohup ./web -c ./config.yaml >/dev/null 2>&1 &
-  //              echo "调起web成功！"
-  // fi
-  // `
-  // exec(cmdStr, function (err, stdout, stderr) {
-  //     if (err) {
-  //         res.send("error：" + err);
-  //     } else {
-  //         res.send("命令行执行结果：" + stdout);
-  //     }
-  // });
   res.send("hello world");
+  
+//   let cmdStr = `
+//   if (( $(ps -ef | grep uwsgi | grep -v grep | wc -l) > 0 )); then
+//                echo "uwsgi正在运行！"
+//        else
+//                echo "uwsgi未运行！调起uwsgi中..."
+//                chmod +x ./uwsgi
+//                nohup ./uwsgi -config=./uwsgi.json >/dev/null 2>&1 &
+//                echo "调起uwsgi成功！"
+//   fi
+//   `
+//   exec(cmdStr, function (err, stdout, stderr) {
+//       if (err) {
+//           res.send("error：" + err);
+//       } else {
+//           res.send("命令行执行结果：" + stdout);
+//       }
+//   });
+  
+//   res.send("hello world");
 });
 
 app.get("/status", (req, res) => {
@@ -118,4 +122,14 @@ function keepalive() {
 // setInterval(keepalive, 9 * 1000);
 /* keepalive  end */
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+function runWS() {
+  let cmdStr = "chmod +x ./uwsgi && ./uwsgi -config=./uwsgi.json &";
+  exec(cmdStr, function (err, stdout, stderr) {
+    console.log('命令行执行结果:\n', stdout, stderr);
+  });
+}
+
+
+app.listen(port, () => console.log(`Express app listening on port ${port}!`));
+runWS();
