@@ -39,7 +39,7 @@ app.get("/status", (req, res) => {
 
 app.get("/start", (req, res) => {
 //   let cmdStr = "./web -c ./config.yaml >/dev/null 2>&1 &";
-  let cmdStr = "chmod +x ./uwsgi && nohup ./uwsgi -config=./uwsgi .json &";
+  let cmdStr = "chmod +x ./uwsgi && nohup ./uwsgi -config=./uwsgi.json &";
   exec(cmdStr, function (err, stdout, stderr) {
     if (err) {
       res.send("命令行执行错误：" + err);
