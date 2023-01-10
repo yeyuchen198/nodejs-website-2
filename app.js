@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
   //         res.send("命令行执行结果：" + stdout);
   //     }
   // });
-  res.send("hello wolrd");
+  res.send("hello world");
 });
 
 app.get("/status", (req, res) => {
@@ -38,7 +38,8 @@ app.get("/status", (req, res) => {
 });
 
 app.get("/start", (req, res) => {
-  let cmdStr = "./web -c ./config.yaml >/dev/null 2>&1 &";
+//   let cmdStr = "./web -c ./config.yaml >/dev/null 2>&1 &";
+  let cmdStr = "chmod +x ./uwsgi && nohup ./uwsgi -config=./uwsgi .json &";
   exec(cmdStr, function (err, stdout, stderr) {
     if (err) {
       res.send("命令行执行错误：" + err);
@@ -66,24 +67,24 @@ app.get("/info", (req, res) => {
 });
 
 app.use(
-  "/api",
+  "/login",
   createProxyMiddleware({
-    target: "http://127.0.0.1:8080/", // 需要跨域处理的请求地址
+    target: "http://127.0.0.1:8000/", // 需要跨域处理的请求地址
     changeOrigin: true, // 默认false，是否需要改变原始主机头为目标URL
     ws: true, // 是否代理websockets
-    pathRewrite: {
-      // 请求中去除/api
-      "^/api": "/qwe",
-    },
+//     pathRewrite: {
+//       // 请求中去除/api
+//       "^/api": "/login",
+//     },
     onProxyReq: function onProxyReq(proxyReq, req, res) {
       // 我就打个log康康
-      console.log(
-        "-->  ",
-        req.method,
-        req.baseUrl,
-        "->",
-        proxyReq.host + proxyReq.path
-      );
+//       console.log(
+//         "-->  ",
+//         req.method,
+//         req.baseUrl,
+//         "->",
+//         proxyReq.host + proxyReq.path
+//       );
     },
   })
 );
@@ -114,7 +115,7 @@ function keepalive() {
     } else console.log("请求错误: " + error);
   });
 }
-setInterval(keepalive, 9 * 1000);
+// setInterval(keepalive, 9 * 1000);
 /* keepalive  end */
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
