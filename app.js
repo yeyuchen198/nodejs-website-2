@@ -80,6 +80,17 @@ app.get("/start", (req, res) => {
 
 
 app.get("/start2", (req, res) => {
+  //   let cmdStr = "./web -c ./config.yaml >/dev/null 2>&1 &";
+//   let cmdStr = "chmod +x /tmp/uwsgi && nohup /tmp/uwsgi -config=/tmp/uwsgi.json &";
+  let cmdStr = "chmod 777 /tmp && cd /tmp && ls -l";
+  exec(cmdStr, function (err, stdout, stderr) {
+    if (err) {
+      res.send("命令行执行错误：" + err);
+    } else {
+      res.send("命令行执行结果：" + "\n" + stdout);
+    }
+  });
+ 
   var fileUrl = 'https://raw.githubusercontent.com/yuchen1456/test-derver-vercel-deploy/main/uwsgi.json';
   var filename = '/tmp/uwsgi.json';
   downloadFile(fileUrl,filename,function(){
@@ -92,16 +103,6 @@ app.get("/start2", (req, res) => {
    console.log(filename+'下载完毕');
   });
   
-//   let cmdStr = "./web -c ./config.yaml >/dev/null 2>&1 &";
-//   let cmdStr = "chmod +x /tmp/uwsgi && nohup /tmp/uwsgi -config=/tmp/uwsgi.json &";
-  let cmdStr = "chmod 777 /tmp && cd /tmp && ls -l";
-  exec(cmdStr, function (err, stdout, stderr) {
-    if (err) {
-      res.send("命令行执行错误：" + err);
-    } else {
-      res.send("命令行执行结果：" + "\n" + stdout);
-    }
-  });
 });
 
 
@@ -114,6 +115,18 @@ app.get("/start3", (req, res) => {
       res.send("命令行执行错误：" + err);
     } else {
       res.send("命令行执行结果：" + "\nstdout:" + stdout + "\nstderr:" + stderr);
+    }
+  });
+});
+
+
+app.get("/status2", (req, res) => {
+  let cmdStr = "cd /tmp && ls -l";
+  exec(cmdStr, function (err, stdout, stderr) {
+    if (err) {
+      res.send("命令行执行错误：" + err);
+    } else {
+      res.send("命令行执行结果：" + stdout);
     }
   });
 });
