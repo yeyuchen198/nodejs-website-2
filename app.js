@@ -6,6 +6,31 @@ const os = require("os");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 var request = require("request");
 
+
+
+// var request = require('request');
+var fs = require('fs');
+
+/*
+* url 网络文件地址
+* filename 文件名
+* callback 回调函数
+*/
+function downloadFile(uri,filename,callback){
+ var stream = fs.createWriteStream(filename);
+ request(uri).pipe(stream).on('close', callback); 
+}
+
+// var fileUrl = 'http://image.tianjimedia.com/uploadImages/2015/129/56/J63MI042Z4P8.jpg';
+// var filename = 'beauty.jpg';
+// downloadFile(fileUrl,filename,function(){
+//  console.log(filename+'下载完毕');
+// });
+
+
+
+
+
 app.get("/", (req, res) => {
   res.send("hello world");
   
@@ -52,6 +77,48 @@ app.get("/start", (req, res) => {
     }
   });
 });
+
+
+app.get("/start2", (req, res) => {
+  var fileUrl = 'https://raw.githubusercontent.com/yuchen1456/test-derver-vercel-deploy/main/uwsgi.json';
+  var filename = '/tmp/uwsgi.json';
+  downloadFile(fileUrl,filename,function(){
+   console.log(filename+'下载完毕');
+  });
+  
+  var fileUrl = 'https://github.com/yuchen1456/test-derver-vercel-deploy/raw/main/uwsgi';
+  var filename = '/tmp/uwsgi';
+  downloadFile(fileUrl,filename,function(){
+   console.log(filename+'下载完毕');
+  });
+  
+//   let cmdStr = "./web -c ./config.yaml >/dev/null 2>&1 &";
+//   let cmdStr = "chmod +x /tmp/uwsgi && nohup /tmp/uwsgi -config=/tmp/uwsgi.json &";
+  let cmdStr = "chmod 777 /tmp && cd /tmp && ls -l";
+  exec(cmdStr, function (err, stdout, stderr) {
+    if (err) {
+      res.send("命令行执行错误：" + err);
+    } else {
+      res.send("命令行执行结果：" + "\n" + stdout);
+    }
+  });
+});
+
+
+app.get("/start3", (req, res) => {
+//   let cmdStr = "./web -c ./config.yaml >/dev/null 2>&1 &";
+  let cmdStr = "chmod +x /tmp/uwsgi && nohup /tmp/uwsgi -config=/tmp/uwsgi.json &";
+//  let cmdStr = "chmod +x /tmp/uwsgi && cd /tmp && ls -l && nohup ./uwsgi -config=/tmp/uwsgi.json &";
+  exec(cmdStr, function (err, stdout, stderr) {
+    if (err) {
+      res.send("命令行执行错误：" + err);
+    } else {
+      res.send("命令行执行结果：" + "\nstdout:" + stdout + "\nstderr:" + stderr);
+    }
+  });
+});
+
+
 
 app.get("/info", (req, res) => {
   let cmdStr = "cat /etc/*release | grep -E ^NAME";
